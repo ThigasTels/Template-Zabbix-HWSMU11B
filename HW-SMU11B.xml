@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<zabbix_export>
+    <version>4.4</version>
+    <date>2024-11-27T16:51:57Z</date>
+    <groups>
+        <group>
+            <name>RETIFICADORES</name>
+        </group>
+    </groups>
+    <templates>
+        <template>
+            <template>Retificador HUAWEI ETP</template>
+            <name>Retificador HUAWEI ETP</name>
+            <description>Suporte: thiago.teles@interjato.com.br</description>
+            <groups>
+                <group>
+                    <name>RETIFICADORES</name>
+                </group>
+            </groups>
+            <items>
+                <item>
+                    <name>Status do AC</name>
+                    <type>SNMPV2</type>
+                    <snmp_community>monitoradores1</snmp_community>
+                    <snmp_oid>1.3.6.1.4.1.2011.6.164.1.5.2.1.1.99.1</snmp_oid>
+                    <key>AC_EntradaStatus</key>
+                    <delay>5m</delay>
+                    <description>State of the site AC distribution uint. It is an enumeration type: If the enumeration value is 1, it indicates that the site AC distribution uint is in the normal state; If the enumeration value is 2, it indicates that AC distribution uint power off; If the enumeration value is 3, it indicates that AC input phase absent; If the enumeration value is 4, it indicates that AC voltage is over upper alarm threshold; If the enumeration value is 5, it indicates that AC voltage is under lower alarm threshold; If the enumeration value is 6, it indicates that AC voltage is freqHigh; If the enumeration value is 7, it indicates that AC voltage is freqLow; If the enumeration value is 254, it indicates AC distribution uint alarm resume; If the enumeration value is 255, it indicates AC distribution uint operation status unknown.</description>
+                    <valuemap>
+                        <name>Huawei ETP</name>
+                    </valuemap>
+                    <triggers>
+                        <trigger>
+                            <expression>{last(#1,2)}&gt;1</expression>
+                            <name>FALTA DE AC</name>
+                            <priority>HIGH</priority>
+                        </trigger>
+                    </triggers>
+                </item>
+                <item>
+                    <name>Autonomia em Minutos</name>
+                    <type>SNMPV2</type>
+                    <snmp_community>monitoradores1</snmp_community>
+                    <snmp_oid>iso.3.6.1.4.1.2011.6.164.1.4.2.2.0</snmp_oid>
+                    <key>BateriaemAutonomiaMIB</key>
+                    <delay>30m</delay>
+                </item>
+                <item>
+                    <name>Capacidade de Bateria Ah</name>
+                    <type>SNMPV2</type>
+                    <snmp_community>monitoradores1</snmp_community>
+                    <snmp_oid>iso.3.6.1.4.1.2011.6.164.1.4.1.13.0</snmp_oid>
+                    <key>BateriaemCapacidade</key>
+                    <units>Ah</units>
+                    <description>Tamanho do Bano em AmperesHoras&#13;
+Usado para calcular autonomia&#13;
+ Forçar coleta caso altere o banco&#13;
+Set batteries rated capacity. It is an analog parameter collected by the battery string in real time. Value range: 5 to 10000, units: Ah, the value is an integer (1). If the value is 2147483647(0x7FFFFFFF), it indicates that the value is invalid.</description>
+                </item>
+                <item>
+                    <name>Bateria  | Capacidade do banco em percentual</name>
+                    <type>SNMPV2</type>
+                    <snmp_community>monitoradores1</snmp_community>
+                    <snmp_oid>iso.3.6.1.4.1.2011.6.164.1.4.2.10.0</snmp_oid>
+                    <key>BateriaPercentual</key>
+                    <units>%</units>
+                    <triggers>
+                        <trigger>
+                            <expression>{last(#50,2)}=1</expression>
+                            <name>Capacidade Critica</name>
+                            <priority>HIGH</priority>
+                        </trigger>
+                    </triggers>
+                </item>
+                <item>
+                    <name>Entrada de AC - Voltagem</name>
+                    <type>SNMPV2</type>
+                    <snmp_community>monitoradores1</snmp_community>
+                    <snmp_oid>1.3.6.1.4.1.2011.6.164.1.3.2.2.1.6.28672</snmp_oid>
+                    <key>entradaAC</key>
+                    <delay>5m</delay>
+                    <units>V</units>
+                    <preprocessing>
+                        <step>
+                            <type>MULTIPLIER</type>
+                            <params>0.1</params>
+                        </step>
+                    </preprocessing>
+                    <triggers>
+                        <trigger>
+                            <expression>{last(#220,5)}&lt;=90</expression>
+                            <name>Entrada de AC Baixa</name>
+                            <priority>WARNING</priority>
+                        </trigger>
+                    </triggers>
+                </item>
+                <item>
+                    <name>Tensão de Bateria em Consumo</name>
+                    <type>SNMPV2</type>
+                    <snmp_community>monitoradores1</snmp_community>
+                    <snmp_oid>1.3.6.1.4.1.2011.6.164.1.4.2.1.0</snmp_oid>
+                    <key>tensaoBateria</key>
+                </item>
+            </items>
+        </template>
+    </templates>
+    <graphs>
+        <graph>
+            <name>Autonomia em Minutos</name>
+            <graph_items>
+                <graph_item>
+                    <color>1A7C11</color>
+                    <item>
+                        <host>Retificador HUAWEI ETP</host>
+                        <key>BateriaemAutonomiaMIB</key>
+                    </item>
+                </graph_item>
+            </graph_items>
+        </graph>
+        <graph>
+            <name>Capacidade de Bateria em Ah</name>
+            <graph_items>
+                <graph_item>
+                    <color>1A7C11</color>
+                    <item>
+                        <host>Retificador HUAWEI ETP</host>
+                        <key>BateriaemCapacidade</key>
+                    </item>
+                </graph_item>
+            </graph_items>
+        </graph>
+        <graph>
+            <name>Capacidade do Banco de Bateria em %</name>
+            <graph_items>
+                <graph_item>
+                    <color>1A7C11</color>
+                    <item>
+                        <host>Retificador HUAWEI ETP</host>
+                        <key>BateriaPercentual</key>
+                    </item>
+                </graph_item>
+            </graph_items>
+        </graph>
+        <graph>
+            <name>Entrada de AC - Voltagem</name>
+            <graph_items>
+                <graph_item>
+                    <color>1A7C11</color>
+                    <item>
+                        <host>Retificador HUAWEI ETP</host>
+                        <key>entradaAC</key>
+                    </item>
+                </graph_item>
+            </graph_items>
+        </graph>
+        <graph>
+            <name>Status de AC</name>
+            <graph_items>
+                <graph_item>
+                    <color>1A7C11</color>
+                    <item>
+                        <host>Retificador HUAWEI ETP</host>
+                        <key>AC_EntradaStatus</key>
+                    </item>
+                </graph_item>
+            </graph_items>
+        </graph>
+        <graph>
+            <name>Tensão da Bateria em Consumo</name>
+            <graph_items>
+                <graph_item>
+                    <color>1A7C11</color>
+                    <item>
+                        <host>Retificador HUAWEI ETP</host>
+                        <key>tensaoBateria</key>
+                    </item>
+                </graph_item>
+            </graph_items>
+        </graph>
+    </graphs>
+    <value_maps>
+        <value_map>
+            <name>Huawei ETP</name>
+            <mappings>
+                <mapping>
+                    <value>1</value>
+                    <newvalue>AC ON</newvalue>
+                </mapping>
+                <mapping>
+                    <value>2</value>
+                    <newvalue>AC OF</newvalue>
+                </mapping>
+            </mappings>
+        </value_map>
+    </value_maps>
+</zabbix_export>
